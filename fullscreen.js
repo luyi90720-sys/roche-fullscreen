@@ -3,9 +3,10 @@
 
   /* =========================================================
    * 全屏助手 - roche-fullscreen
-   * 让 web 端 Roche（浏览器里运行）一键全屏 / 退出全屏。
-   * 注入一个悬浮毛玻璃圆形按钮（右下角），点击触发
-   * Fullscreen API；再点一次退出。
+   * 让 web 端 Roche（浏览器里运行）自动/手动全屏。
+   * - 自动：页面打开后第一次任意交互（点击/触摸/按键）即进入全屏
+   *   （浏览器强制要求全屏必须在用户手势中调用，无法启动即全屏）
+   * - 手动：右下角悬浮毛玻璃圆形按钮，点击全屏 / 再点退出。
    *
    * 限制说明：
    *   - 安卓 Chrome / PC 浏览器：完全支持。
@@ -66,6 +67,35 @@
 
   var btn = null;
   var tipTimer = null;
+  var autoListeners = [];
+
+  function cleanupAutoListeners() {
+    for (var i = 0; i < autoListeners.length; i++) {
+      var e = autoListeners[i];
+      document.removeEventListener(e[0], e[1], true);
+    }
+    autoListeners = [];
+  }
+
+  // 浏览器安全限制：requestFullscreen 必须在用户手势中调用（启动时自动调用会被拒绝）。
+  // 因此做成：页面打开后第一次任意交互（点击/触摸/按键）自动进入全屏，几乎无感。
+  function autoFullscreenOnce() {
+    if (typeof document === "undefined") return;
+    var fired = false;
+    var tryFs = function () {
+      if (fired) return;
+      fired = true;
+      cleanupAutoListeners();
+      if (isFullscreen()) return;
+      enterFullscreen().catch(function () { /* iOS/不支持：静默，用户可用悬浮按钮 */ });
+    };
+    var events = ["click", "touchstart", "keydown"];
+    for (var i = 0; i < events.length; i++) {
+      var ev = events[i];
+      document.addEventListener(ev, tryFs, true);
+      autoListeners.push([ev, tryFs]);
+    }
+  }
 
   function showTip(text) {
     var tip = document.getElementById(UID + "-tip");
@@ -118,10 +148,12 @@
     btn.__rfOnFsChange = onFsChange;
 
     (document.body || document.documentElement).appendChild(btn);
+    autoFullscreenOnce();
   }
 
   function cleanup() {
     try {
+      cleanupAutoListeners();
       if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
       var tip = document.getElementById(UID + "-tip");
       if (tip && tip.parentNode) tip.parentNode.removeChild(tip);
