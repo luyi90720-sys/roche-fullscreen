@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全屏助手 · 演示</title>
+<style>
+  body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#f6f7fb 0%,#e8ecf7 100%);color:#1f2329;}
+  .card{max-width:420px;padding:40px 36px;border-radius:20px;text-align:center;
+    background:rgba(255,255,255,.75);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    box-shadow:0 12px 40px rgba(60,80,140,.14),inset 0 0 0 1px rgba(255,255,255,.7);}
+  h1{font-size:22px;margin:0 0 10px;}
+  p{font-size:14px;line-height:1.7;color:#646a73;margin:0 0 22px;}
+  .demo-btn{display:inline-block;padding:12px 28px;border:none;border-radius:999px;cursor:pointer;
+    font-size:15px;color:#fff;background:#5a6cf0;transition:transform .15s ease,opacity .15s ease;}
+  .demo-btn:hover{transform:translateY(-1px);}
+  .demo-btn:active{opacity:.85;}
+  .foot{position:fixed;bottom:14px;width:100%;text-align:center;font-size:12px;color:#8a9099;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>全屏助手 · 演示</h1>
+    <p>下面这个按钮就是插件注入的效果。<br>点击右下角悬浮按钮，即可一键全屏 / 退出全屏。<br><br>
+      安卓 Chrome / PC 浏览器：完全支持。<br>iOS Safari：不支持网页全屏，请用「添加到主屏幕」。</p>
+    <button class="demo-btn" id="demo">我也试试全屏</button>
+  </div>
+  <div class="foot">roche-fullscreen · 点右下角圆形按钮切换全屏</div>
+
+  <!-- 模拟插件注入的悬浮按钮 -->
+  <button id="rf-demo-btn" aria-label="切换全屏" style="position:fixed;right:18px;bottom:18px;z-index:9999;width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 4px 20px rgba(0,0,0,.14);color:#2b2f36;">
+    <svg id="rf-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+  </button>
+  <script>
+    var btn = document.getElementById("rf-demo-btn");
+    var ico = document.getElementById("rf-ico");
+    document.getElementById("demo").addEventListener("click", function () {
+      if (document.fullscreenElement) { document.exitFullscreen(); }
+      else { document.documentElement.requestFullscreen().catch(function () { alert("当前浏览器不支持网页全屏"); }); }
+    });
+    btn.addEventListener("click", function () {
+      if (document.fullscreenElement) { document.exitFullscreen(); }
+      else { document.documentElement.requestFullscreen().catch(function () { alert("当前浏览器不支持网页全屏"); }); }
+    });
+    document.addEventListener("fullscreenchange", function () {
+      var on = !!document.fullscreenElement;
+      btn.style.background = on ? "rgba(18,20,26,.78)" : "rgba(255,255,255,.72)";
+      btn.style.color = on ? "#fff" : "#2b2f36";
+      ico.innerHTML = on
+        ? '<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>'
+        : '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+    });
+  </script>
+</body>
+</html>
