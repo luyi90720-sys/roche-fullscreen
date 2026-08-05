@@ -1,8 +1,8 @@
 {
   "id": "roche-fullscreen",
   "name": "全屏助手",
-  "version": "1.0.0",
-  "description": "一键让 web 端 Roche 全屏显示，沉浸式使用；再点一次退出全屏。安卓 Chrome / PC 浏览器全支持，iOS 请用「添加到主屏幕」。",
+  "version": "1.1.0",
+  "description": "web 端 Roche 自动全屏：打开后首次点击页面即全屏，也可用右下角悬浮按钮手动切换。安卓 Chrome / PC 浏览器全支持，iOS 请用「添加到主屏幕」。",
   "author": "Roche",
   "entry": "https://luyi90720-sys.github.io/roche-fullscreen/fullscreen.js",
   "hash": "",
